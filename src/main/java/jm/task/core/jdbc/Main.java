@@ -29,8 +29,5 @@ public class Main {
         userService.cleanUsersTable();
 
 
-        Util.closeConnection();
-
-
     }
 }

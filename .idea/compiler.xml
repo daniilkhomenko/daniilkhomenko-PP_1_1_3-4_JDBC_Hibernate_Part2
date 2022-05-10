@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="daniilkhomenko-PP_1_1_3-4_JDBC_Hibernate_Part2" />
         <module name="TaskJDBC" />
         <module name="PP_1_1_3-4_JDBC_Hibernate" />
       </profile>

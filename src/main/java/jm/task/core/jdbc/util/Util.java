@@ -12,30 +12,54 @@ import java.util.Properties;
 
 public class Util {
 
-    private static Connection conn;
+    private static final String USER = "root";
+    private static final String URL = "jdbc:mysql://localhost:3306/kata_homework1";
+    private static final String PASSWORD = "";
+    private static SessionFactory sessionFactory;
 
-    public static void connect () {
+
+    public static Connection connectJDBC() {
+        Connection connection = null;
+
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kata_homework1", "root", "Agotis444");
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return connection;
     }
 
-    public static void connectHibernate () {
 
-    }
+    public static SessionFactory connectHibernate() {
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
 
-    public static Connection getConnection() {
-        return conn;
-    }
+                // Hibernate settings equivalent to hibernate.cfg.xml's properties:
+                Properties settings = new Properties();
 
-    //закрывает общий Connection в Main, чтобы переиспользовать его в DAO, а не открывать и закрывать каждый раз заново
-    public static void closeConnection () {
-        try {
-           conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.URL, URL);
+                settings.put(Environment.USER, USER);
+                settings.put(Environment.PASS, PASSWORD);
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+                settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+
+                configuration.setProperties(settings);
+                configuration.addAnnotatedClass(User.class);
+
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties())
+                        .build();
+
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        return sessionFactory;
     }
 }
